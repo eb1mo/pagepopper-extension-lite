@@ -1,7 +1,7 @@
 {
   "name": "pagepopper-lite",
   "displayName": "Pagepopper lite",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Launch your sites with Confetti Celebrations. (Needs website to operate.)",
   "author": "Bimo",
   "scripts": {
