@@ -89,6 +89,20 @@ pnpm build:firefox
 
 Output: `build/firefox-mv2-prod`
 
+#### Firefox requires adding the following to `manifest.json`
+
+```json
+"browser_specific_settings": {
+        "gecko": {
+            "id": "extension-name@domain.com",
+            "strict_min_version": "109.0",
+            "data_collection_permissions": {
+                "required": false
+            }
+        }
+    }
+```
+
 ### Package as ZIP
 
 ```bash
