@@ -1,0 +1,42 @@
+{
+  "name": "pagepopper-lite",
+  "displayName": "Pagepopper lite",
+  "version": "0.1.0",
+  "description": "Launch your sites with Confetti Celebrations. (Needs website to operate.)",
+  "author": "Bimo",
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "plasmo build",
+    "package": "plasmo package",
+    "build:zip": "plasmo build && plasmo package",
+    "build:firefox": "plasmo build --target=firefox-mv3",
+    "build:firefox:zip": "plasmo build --target=firefox-mv3 && plasmo package --target=firefox-mv3",
+    "build:brave": "plasmo build --target=brave-mv3",
+    "build:brave:zip": "plasmo build --target=brave-mv3 && plasmo package --target=brave-mv3"
+  },
+  "dependencies": {
+    "@tsparticles/confetti": "^3.9.1",
+    "plasmo": "0.90.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "4.1.1",
+    "@types/chrome": "0.0.258",
+    "@types/node": "20.11.5",
+    "@types/react": "18.2.48",
+    "@types/react-dom": "18.2.18",
+    "prettier": "3.2.4",
+    "typescript": "5.3.3"
+  },
+  "manifest": {
+    "permissions": [
+      "tabs",
+      "storage"
+    ],
+    "host_permissions": [
+      "http://*/*",
+      "https://*/*"
+    ]
+  }
+}

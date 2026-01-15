@@ -1,0 +1,80 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+          run_install: true
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build Chrome extension
+        run: pnpm build
+
+      - name: Package Chrome extension
+        run: pnpm package
+
+      - name: Rename Chrome package
+        run: mv build/chrome-mv3-prod.zip build/pagepopper-lite-chrome-${{ steps.version.outputs.VERSION }}.zip
+
+      - name: Build Firefox extension
+        run: pnpm build:firefox
+        continue-on-error: true
+
+      - name: Package Firefox extension
+        run: pnpm package --target=firefox-mv3
+        continue-on-error: true
+
+      - name: Rename Firefox package
+        run: |
+          if [ -f build/firefox-mv3-prod.zip ]; then
+            mv build/firefox-mv3-prod.zip build/pagepopper-lite-firefox-${{ steps.version.outputs.VERSION }}.zip
+          fi
+        continue-on-error: true
+
+      - name: List build artifacts
+        run: ls -la build/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release v${{ steps.version.outputs.VERSION }}
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: build/pagepopper-lite-*.zip
+          fail_on_unmatched_files: false
+
+  cleanup-old-releases:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Delete old releases (keep latest 5)
+        uses: dev-drprasad/delete-older-releases@v0.3.4
+        with:
+          keep_latest: 5
+          delete_tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
